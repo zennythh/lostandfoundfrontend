@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item List</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Items</h1>
+    <ul id="item-list"></ul> <!-- List where items will be displayed -->
+
+    <script>
+        // Axios should now be globally available as it's loaded via CDN
+
+        async function fetchItems() {
+            try {
+                const response = await axios.get('/api/items'); // Proxy will forward to backend
+
+                const itemList = document.getElementById('item-list');
+
+                // Check the structure of the response data in the console
+                console.log(response.data); // Log the entire response data
+
+                // Check if the response data is an array
+                if (Array.isArray(response.data)) {
+                    response.data.forEach(item => {
+                        // Log each item to inspect its structure
+                        console.log(item);
+
+                        // Assuming each item has "name" and "description" properties
+                        const li = document.createElement('li');
+                        // Make sure to access the properties properly (e.g., item.name, item.description)
+                        li.textContent = `${item.name ? item.name : 'Unknown'} - ${item.description ? item.description : 'No description'} - ${item.location ? item.location : 'No location'}`;
+                        itemList.appendChild(li);
+                    });
+                } else {
+                    itemList.innerHTML = "<li>No items available</li>";
+                }
+            } catch (error) {
+                console.error('Error fetching items:', error);
+            }
+        }
+
+        window.onload = fetchItems;
+    </script>
+</body>
+</html>

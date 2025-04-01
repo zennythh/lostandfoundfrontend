@@ -12,15 +12,24 @@
     
     <header>
         <div class="nav-container">
-            <img src="image-removebg-preview.png" alt="Logo" class="logo-img">
-            <div class="logo-text">Until I Found You</div>
-            <nav>
-                <a href="#">Home</a>
-                <a href="#">How It Works</a>
-                <a href="#">Contact</a>
+            <div class="logo">
+                <img src="image-removebg-preview.png" alt="Logo" class="logo-img">
+                <span class="logo-text">Until I Found You</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="nav-item" data-target="hero">Home</a>
+                <a href="#" class="nav-item" data-target="introduction">About</a>
+                <a href="#" class="nav-item" data-target="tutorial">Features</a>
+                <a href="#" class="nav-item" data-target="contact">Contact</a>
             </nav>
+            <div class="hamburger-menu">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
         </div>
     </header>
+    
 
     <section class="hero">
         <div class="overlay"></div>
@@ -234,5 +243,32 @@
     <footer>
         <p>© 2025 Until I Found You | UCC Lost & Found System</p>
     </footer>
+
+    <!-- Contact Section -->
+<section class="contact">
+    <h2>Contact the Developers</h2>
+    
+    <div class="developer">
+        <h3>John Doe</h3>
+        <p><strong>Role:</strong> Frontend Developer</p>
+        <p><strong>Email:</strong> johndoe@example.com</p>
+        <p><strong>Phone:</strong> (123) 456-7890</p>
+    </div>
+
+    <div class="developer">
+        <h3>Jane Smith</h3>
+        <p><strong>Role:</strong> Backend Developer</p>
+        <p><strong>Email:</strong> janesmith@example.com</p>
+        <p><strong>Phone:</strong> (098) 765-4321</p>
+    </div>
+
+    <div class="developer">
+        <h3>Mark Johnson</h3>
+        <p><strong>Role:</strong> UI/UX Designer</p>
+        <p><strong>Email:</strong> markjohnson@example.com</p>
+        <p><strong>Phone:</strong> (555) 123-4567</p>
+    </div>
+</section>
+
 </body>
 </html>
