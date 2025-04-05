@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Until I Found You | Lost & Found Management System</title>
+    <link rel="stylesheet" href="stylee.css">
+    <script src="interface.js" defer></script>
+    <link rel="icon" href="image-removebg-preview.png">
+</head>
+<body>
+<header>
+    <div class="nav-container">
+        <div class="logo">
+            <img src="image-removebg-preview.png" alt="Logo" class="logo-img">
+            <div class="logo-text"><p> Until I Found You</p></div></div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">How It Works</a>
+            <a href="#">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<div class="filter">
+    <h2>Filter Items</h2>
+
+    <label>Category:</label>
+    <select id="category">
+        <option value="">All</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Clothes & Accessories">Clothes & Accessories</option>
+        <option value="Personal Items">Personal Items</option>
+        <option value="Others">Others</option>
+    </select>
+
+    <label>Status:</label>
+    <select id="status">
+        <option value="">All</option>
+        <option value="Lost">Lost</option>
+        <option value="Found">Found</option>
+        <option value="Returned">Returned</option>
+    </select>
+
+    <label>Campus:</label>
+    <select id="campus">
+        <option value="">All</option>
+        <option value="Bagong Silang">Bagong Silang</option>
+        <option value="Camarin">Camarin</option>
+        <option value="Congress">Congress</option>
+        <option value="South">South</option>
+    </select>
+
+    <button onclick="filterItems()">Search</button>
+
+    <h3>Results:</h3>
+    <ul id="results"></ul>
+
+    <script>
+        function filterItems() {
+            let category = document.getElementById("category").value;
+            let status = document.getElementById("status").value;
+            let campus = document.getElementById("campus").value;
+
+            let query = ?category=${category}&status=${status}&campus=${campus};
+
+            fetch("/api/items/filter" + query)
+                .then(response => response.json())
+                .then(data => {
+                    let results = document.getElementById("results");
+                    results.innerHTML = "";
+                    data.forEach(item => {
+                        let li = document.createElement("li");
+                        li.textContent = ${item.name} - ${item.category} - ${item.status} - ${item.campus};
+                        results.appendChild(li);
+                    });
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    </script>
+</div>
+
+<div class="containers">
+    <div class="one"> <p style="align-content: center"> MISSING ITEM:
+        <br> JOURNAL NI MIKES </p>
+        </p>
+        <img src="01c26f215e60299653ea8fa06115414f.jpg" class="uno"></div>
+
+    <div class="two"><p style="align-content: center"> MISSING ITEM:
+        <br> RICE COOKER </p>
+        </p>
+        <img src="rice.png" class="uno"></div>
+    <div class="three"> <p style="align-content: center"> MISSING ITEM:
+        <br> TSHIRT NA ORANGE </p>
+        </p>
+        <img src="Plain_Quick_Dry_Sports_Tshirt_orange__71051.jpg" class="uno"></div>
+    <div class="four"> <p style="align-content: center"> MISSING ITEM:
+        <br> BRA NA PINK </p>
+        </p>
+        <img src="bra.png" class="uno"></div>
+
+
+
+</div>
+
+
+
+<footer>
+    <p>© 2025 Until I Found You | UCC Lost & Found System</p>
+</footer>
+</body>
+</html>
