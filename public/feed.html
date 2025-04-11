@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Until I Found You | Lost & Found System</title>
+  <link rel="stylesheet" href="feed.css" />
+  <script src="home.js" defer></script>
+  <link rel="icon" href="image-removebg-preview.png" />
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <img src="image-removebg-preview.png" alt="Logo" class="sidebar-logo" />
+        <h2>Until I Found You</h2>
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+      </div>
+      <nav class="sidebar-menu">
+        <a href="#" onclick="filterView('dashboard')">Dashboard</a>
+        <a href="#" onclick="filterView('lost')">Lost Items</a>
+        <a href="#" onclick="filterView('found')">Found Items</a>
+        <a href="#" onclick="filterView('claimed')">Claimed Items</a>
+      </nav>
+      <div class="report-btn">
+        <button onclick="alert('Redirect to report page')">+ Report Item</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <h1>Dashboard</h1>
+        <p>Overview of recent lost and found items</p>
+        <input type="text" placeholder="Search items..." class="search-input"/>
+      </header>
+
+      <section class="summary-cards">
+        <div class="card lost">Lost Items <span>3</span></div>
+        <div class="card found">Found Items <span>3</span></div>
+        <div class="card claimed">Claimed Items <span>3</span></div>
+      </section>
+
+      <section class="recent-reports">
+        <h2>Recent Reports</h2>
+        <div class="report-list">
+          <div class="report-item lost">
+            <img src="01c26f215e60299653ea8fa06115414f.jpg" />
+            <div>
+              <h3>Journal ni Mikes</h3>
+              <p>Others • 11/20/2023 • Campus Library</p>
+              <span class="tag">Lost</span>
+            </div>
+          </div>
+          <div class="report-item lost">
+            <img src="rice.png" />
+            <div>
+              <h3>Rice Cooker</h3>
+              <p>Electronics • 11/18/2023 • South Campus</p>
+              <span class="tag">Lost</span>
+            </div>
+          </div>
+          <div class="report-item found">
+            <img src="bra.png" />
+            <div>
+              <h3>Bra na Pink</h3>
+              <p>Clothes • 11/17/2023 • Congress</p>
+              <span class="tag">Found</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

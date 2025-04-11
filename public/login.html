@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login & Registration | Until I Found You</title>
+  <link rel="stylesheet" href="login.css" />
+  <link rel="icon" href="image-removebg-preview.png" />
+</head>
+<body>
+
+<header>
+  <div class="nav-container">
+    <div class="logo">
+      <img src="image-removebg-preview.png" alt="Logo" class="logo-img">
+      <span class="logo-text">Until I Found You</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="feed.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="form-section">
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('login')">Login</div>
+      <div class="tab" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <form id="loginForm" class="active">
+      <input type="text" placeholder="Username" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+      <button type="button" class="admin-btn" onclick="alert('Admin Login')">Login as Admin</button>
+    </form>
+
+    <form id="registerForm">
+      <input type="text" placeholder="Full Name" required>
+      <input type="text" placeholder="Username" required>
+      <input type="email" placeholder="Email" required>
+      <input type="password" placeholder="Password" required>
+      <button type="submit">Register</button>
+    </form>
+  </div>
+</section>
+  
+  <footer>
+        <p>© 2025 Until I Found You | UCC Lost & Found System</p>
+  </footer>
+
+<script>
+   function switchTab(tab) {
+    const loginTab = document.querySelector('.tab:nth-child(1)');
+    const registerTab = document.querySelector('.tab:nth-child(2)');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    loginTab.classList.remove('active');
+    registerTab.classList.remove('active');
+    loginForm.classList.remove('active');
+    registerForm.classList.remove('active');
+
+    setTimeout(() => {
+      if (tab === 'login') {
+        loginTab.classList.add('active');
+        loginForm.classList.add('active');
+      } else {
+        registerTab.classList.add('active');
+        registerForm.classList.add('active');
+      }
+    }, 50); // Slight delay for smoother fade
+  }
+</script>
+
+</body>
+</html>
