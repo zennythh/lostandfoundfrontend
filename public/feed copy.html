@@ -24,39 +24,39 @@
         <a href="#" onclick="filterView('claimed')">Claimed Items</a>
       </nav>
       <div class="report-btn">
-        <button onclick="openForm()">+ Report Item</button>
+        <button onclick="openform()">+Report Item</button>
       </div>
     </aside>
-      
-      <div id="overlay" class="overlay">
-        <form class="form" onsubmit="submitForm(event)">
-          <h2>Report Item</h2>
-      
-          <label for="type">Type:</label>
-          <select id="type" name="type" required>
-            <option value="">Select</option>
-            <option value="lost">Lost Item</option>
-            <option value="found">Found Item</option>
-          </select>
-      
-          <label for="item">Item Name:</label>
-          <input type="text" id="item" name="item" placeholder="e.g. Red wallet" required>
-      
-          <label for="description">Description:</label>
-          <textarea id="description" name="description" rows="3" placeholder="Add details like color, brand, markings..." required></textarea>
-      
-          <label for="date">Date Lost/Found:</label>
-          <input type="date" id="date" name="date" required>
-      
-          <label for="location">Location:</label>
-          <input type="text" id="location" name="location" placeholder="e.g. UCC Congress, 2nd floor" required>
-      
-          <button type="submit">Submit</button>
-          <button type="button" onclick="closeForm()">Cancel</button>
 
-        </form>
-      </div>
-      
+    <div id="overlay" class="overlay">
+      <form class="form" onsubmit="submitForm(event)">
+        <h2>Report Item</h2>
+    
+        <label for="type">Type:</label>
+        <select id="type" name="type" required>
+          <option value="">Select</option>
+          <option value="lost">Lost Item</option>
+          <option value="found">Found Item</option>
+        </select>
+    
+        <label for="item">Item Name:</label>
+        <input type="text" id="item" name="item" placeholder="e.g. Red wallet" required>
+    
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="3" placeholder="Add details like color, brand, markings..." required></textarea>
+    
+        <label for="date">Date Lost/Found:</label>
+        <input type="date" id="date" name="date" required>
+    
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" placeholder="e.g. UCC Congress, 2nd floor" required>
+    
+        <label for="contact">Your Contact Info:</label>
+        <input type="text" id="contact" name="contact" placeholder="Phone or email" required>
+    
+        <button type="submit">Submit</button>
+      </form>
+    </div>
 
     <!-- Main Content -->
     <main class="main-content">
