@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lost & Found Example</title>
+  <style>
+    .report-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      cursor: pointer;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px; right: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .report-list img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #e2e2e2;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Reported Items</h2>
+  <div class="report-list"></div>
+
+  <!-- Modal -->
+  <div id="itemModal" class="modal hidden">
+    <div class="modal-content">
+      <span onclick="closeModal()" class="close">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalType"></p>
+      <p id="modalDesc"></p>
+      <p id="modalDate"></p>
+      <p id="modalLocation"></p>
+      <img id="modalImage" src="placeholder.png" alt="Item image" />
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sampleItems = [
+        {
+          name: "Black Backpack",
+          status: "lost",
+          category: "Bags",
+          reportedOn: "2025-04-01",
+          reportedTime: "14:30",
+          location: "Library",
+          imageUrl: "https://via.placeholder.com/100"
+        }
+      ];
+
+      renderItems(sampleItems);
+    });
+
+    function renderItems(items) {
+      const container = document.querySelector('.report-list');
+      container.innerHTML = '';
+
+      items.forEach(item => {
+        const button = document.createElement('button');
+        button.className = `report-item ${item.status}`;
+        button.onclick = () => openModalFromHTML(
+          item.name,
+          capitalizeFirstLetter(item.status),
+          `${item.category} • ${formatDate(item.reportedOn)} • ${item.location}`,
+          item.reportedOn,
+          item.location,
+          item.imageUrl
+        );
+
+        button.innerHTML = `
+          <img src="${item.imageUrl}" alt="${item.name}" />
+          <div>
+            <h3>${item.name}</h3>
+            <p>${item.category} • ${formatDate(item.reportedOn)} • ${item.location}</p>
+            <span class="tag">${capitalizeFirstLetter(item.status)}</span>
+          </div>
+        `;
+
+        container.appendChild(button);
+      });
+    }
+
+    function openModalFromHTML(title, status, description, date, location, imgUrl) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalType').textContent = status;
+      document.getElementById('modalDesc').textContent = description;
+      document.getElementById('modalDate').textContent = formatDate(date);
+      document.getElementById('modalLocation').textContent = location;
+      document.getElementById('modalImage').src = imgUrl || 'placeholder.png';
+
+      document.getElementById('itemModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('itemModal').classList.add('hidden');
+    }
+
+    function capitalizeFirstLetter(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+    }
+  </script>
+</body>
+</html>

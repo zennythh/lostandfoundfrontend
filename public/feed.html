@@ -15,7 +15,6 @@
       <div class="sidebar-header">
         <img src="image-removebg-preview.png" alt="Logo" class="sidebar-logo" />
         <h2>Until I Found You</h2>
-        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
       </div>
       <nav class="sidebar-menu">
         <a href="#" onclick="filterView('dashboard')">Dashboard</a>
@@ -64,6 +63,7 @@
     <!-- Main Content -->
     <main class="main-content">
       <header class="topbar">
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
         <h1>Dashboard</h1>
         <p>Overview of recent lost and found items</p>
         <input type="text" placeholder="Search items..." class="search-input"/>
@@ -75,33 +75,10 @@
         <div class="card claimed">Claimed Items <span>3</span></div>
       </section>
 
-      <section class="recent-reports">
-        <h2>Recent Reports</h2>
+      <section class="reports">
+        <h2>Reported Items</h2>
         <div class="report-list">
-          <div class="report-item lost">
-            <img src="01c26f215e60299653ea8fa06115414f.jpg" />
-            <div>
-              <h3>Journal ni Mikes</h3>
-              <p>Others • 11/20/2023 • Campus Library</p>
-              <span class="tag">Lost</span>
-            </div>
-          </div>
-          <div class="report-item lost">
-            <img src="rice.png" />
-            <div>
-              <h3>Rice Cooker</h3>
-              <p>Electronics • 11/18/2023 • South Campus</p>
-              <span class="tag">Lost</span>
-            </div>
-          </div>
-          <div class="report-item found">
-            <img src="bra.png" />
-            <div>
-              <h3>Bra na Pink</h3>
-              <p>Clothes • 11/17/2023 • Congress</p>
-              <span class="tag">Found</span>
-            </div>
-          </div>
+          <!-- JS will dynamically insert <button class="report-item"> here -->
         </div>
       </section>
     </main>

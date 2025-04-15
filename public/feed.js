@@ -29,7 +29,6 @@ function submitForm(event) {
   event.target.reset();
 }
 
-// Fetch and display items
 document.addEventListener('DOMContentLoaded', () => {
   fetchItems();
   fetchSummary();
@@ -51,7 +50,7 @@ function fetchItems() {
 
 function renderItems(items) {
   const container = document.querySelector('.report-list');
-  container.innerHTML = ''; // Clear static items
+  container.innerHTML = '';
 
   items.forEach(item => {
     const button = document.createElement('button');
@@ -60,6 +59,9 @@ function renderItems(items) {
       item.name,
       capitalizeFirstLetter(item.status),
       `${item.category || 'Uncategorized'} • ${formatDate(item.reportedOn)} • ${item.location}`,
+      item.reportedOn,
+      item.reportedTime || 'Unknown',
+      item.location,
       item.imageUrl || 'placeholder.png'
     );
 
@@ -100,16 +102,15 @@ function updateSummaryCounts(summary) {
   document.querySelector('.card.claimed span').textContent = summary.claimed || 0;
 }
 
-// Modal logic
-function openModalFromHTML(title, status, details, imgUrl) {
+function openModalFromHTML(title, status, description, date, time, location, imgUrl) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalType').textContent = status;
-  document.getElementById('modalDesc').textContent = details;
-  document.getElementById('modalDate').textContent = ''; // Optional: add actual date
-  document.getElementById('modalTime').textContent = ''; // Optional: add actual time
-  document.getElementById('modalLocation').textContent = ''; // Optional: add actual location
+  document.getElementById('modalDesc').textContent = description;
+  document.getElementById('modalDate').textContent = formatDate(date);
+  document.getElementById('modalTime').textContent = time;
+  document.getElementById('modalLocation').textContent = location;
   document.getElementById('modalImage').src = imgUrl || 'placeholder.png';
-  
+
   document.getElementById('itemModal').classList.remove('hidden');
 }
 
@@ -119,6 +120,9 @@ function closeModal() {
 
 function filterView(category) {
   console.log("Filtering category:", category);
-  // Future logic to filter items by category
+  // Future logic here
 }
 
+function toggleSidebar() {
+  document.querySelector('.sidebar')?.classList.toggle('open');
+}
