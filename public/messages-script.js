@@ -1,4 +1,3 @@
-88% of storage used … If you run out, you can't create, edit, and upload files. Get 100 GB of storage for ₱119.00 ₱29.00/month for 2 months.
 let isOtherUser = false;
 
 function toggleUser() {
