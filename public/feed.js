@@ -55,6 +55,11 @@ function renderItems(items) {
   items.forEach(item => {
     const button = document.createElement('button');
     button.className = `report-item ${item.type}`;
+
+    const imagePath = item.imagePath
+          ? item.imagePath.replace(/^uploads\//, 'http://localhost:8080/images/')
+          : 'placeholder.png';
+
     button.onclick = () => openModalFromHTML(
       item.name,
       capitalizeFirstLetter(item.status),
@@ -62,11 +67,11 @@ function renderItems(items) {
       item.reportedOn,
       item.reportedTime || 'Unknown',
       item.location,
-      item.imageUrl || 'placeholder.png'
+      imagePath || 'placeholder.png'
     );
 
     button.innerHTML = `
-      <img src="${item.imageUrl || 'placeholder.png'}" alt="${item.name}" />
+      <img src="${imagePath || 'placeholder.png'}" alt="${item.name}" />
       <div>
         <h3>${item.name}</h3>
         <p>${item.category || 'Uncategorized'} • ${formatDate(item.reportedOn)} • ${item.location}</p>
