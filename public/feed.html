@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Until I Found You | Lost & Found System</title>
-  <link rel="stylesheet" href="stylee.css" />
+  <link rel="stylesheet" href="feed.css" />
   <script src="feed.js" defer></script>
   <link rel="icon" href="image-removebg-preview.png" />
 </head>
@@ -31,15 +31,25 @@
         <form class="form" onsubmit="submitForm(event)">
           <h2>Report Item</h2>
 
-          <label for="type">Type:</label>
-          <select id="type" name="type" required>
+          <label for="status">Type:</label>
+          <select id="status" name="status" required>
             <option value="">Select</option>
-            <option value="lost">Lost Item</option>
-            <option value="found">Found Item</option>
+            <option value="Lost">Lost Item</option>
+            <option value="Found">Found Item</option>
           </select>
 
-          <label for="item">Item Name:</label>
-          <input type="text" id="item" name="item" placeholder="e.g. Red wallet" required>
+          <label for="category">Item Category:</label>
+          <select id="category" name="category" required>
+            <option value="">Select</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Documents">Documents</option>
+            <option value="Personal_Items">Personal Items</option>
+            <option value="Clothes_and_Accessories">Clothes and Accessories</option>
+            <option value="Others">Others</option>
+          </select>
+
+          <label for="name">Item Name:</label>
+          <input type="text" id="name" name="name" placeholder="e.g. Red wallet" required>
 
           <label for="description">Description:</label>
           <textarea id="description" name="description" rows="3" placeholder="Add details like color, brand, markings..." required></textarea>
@@ -50,12 +60,12 @@
           <label for="time">Time Lost/Found:</label>
           <input type="time" id="time" name="time" required>
       
-          <label for="Campus">Campus Lost/Found:</label>
+          <label for="campus">Campus Lost/Found:</label>
           <select type="text" id="campus" name="campus" required>
-            <option value="congress">Congress Campus</option>
-            <option value="bagong silang">Bagong Silang Campus</option>
-            <option value="camarin">Camarin Campus</option>
-            <option value="south">South Caloocan Campus</option>
+            <option value="Congress">Congress Campus</option>
+            <option value="Bagong_Silang">Bagong Silang Campus</option>
+            <option value="Camarin">Camarin Campus</option>
+            <option value="South">South Caloocan Campus</option>
           </select>
           
           <label for="location">Location:</label>
