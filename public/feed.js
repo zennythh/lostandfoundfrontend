@@ -86,7 +86,7 @@ function formatString(str) {
 }
 
 function renderItems(items) {
-  const container = document.querySelector('.report-list');
+     const container = document.querySelector('.report-list');
   container.innerHTML = '';
 
   items.forEach(item => {
@@ -97,7 +97,6 @@ function renderItems(items) {
       ? item.imagePath.replace(/^uploads\//, 'http://localhost:8080/images/')
       : 'placeholder.png';
 
-    console.log("Item ID for modal:", item.itemId);
     button.onclick = () => openModalFromHTML(
       item.name,
       capitalizeFirstLetter(item.status),
