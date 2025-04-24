@@ -1,4 +1,5 @@
 let allItems = [];
+let currentFilter = 'dashboard';
 
 const overlay = document.getElementById('overlay');
 const pageContent = document.getElementById('page-content');
@@ -80,6 +81,10 @@ function getTimeOnly(datetimeStr) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+function formatString(str) {
+  return str.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+}
+
 function renderItems(items) {
   const container = document.querySelector('.report-list');
   container.innerHTML = '';
@@ -92,16 +97,19 @@ function renderItems(items) {
       ? item.imagePath.replace(/^uploads\//, 'http://localhost:8080/images/')
       : 'placeholder.png';
 
+    console.log("Item ID for modal:", item.itemId);
     button.onclick = () => openModalFromHTML(
       item.name,
       capitalizeFirstLetter(item.status),
-      `${item.category || 'Uncategorized'} • ${formatDate(item.reportedOn)} • ${item.location}`,
+      `${formatString(item.category || 'Uncategorized')} • ${formatDate(item.reportedOn)} • ${item.location}`,
       item.reportedOn,
       getTimeOnly(item.reportedOn),
       item.location,
-      item.campus,
+      formatString(item.campus), // Format campus name here
       imagePath || 'placeholder.png',
-      item.authorId
+      item.authorId,
+      item.itemId,
+      currentFilter === 'yourReports' // Show action buttons only in "Your Reports"
     );
 
     const img = document.createElement('img');
@@ -114,7 +122,7 @@ function renderItems(items) {
     title.textContent = item.name;
 
     const description = document.createElement('p');
-    description.textContent = `${item.category || 'Uncategorized'} • ${formatDate(item.reportedOn)} • ${item.location}`;
+    description.textContent = `${formatString(item.category || 'Uncategorized')} • ${formatDate(item.reportedOn)} • ${item.location}`;
 
     const tag = document.createElement('span');
     tag.className = 'tag';
@@ -150,7 +158,7 @@ function updateSummaryCounts(summary) {
   document.querySelector('.card.claimed span').textContent = summary.claimed || 0;
 }
 
-function openModalFromHTML(title, status, description, date, time, location, campus, imgUrl, authorId) {
+function openModalFromHTML(title, status, description, date, time, location, campus, imgUrl, authorId, itemId, showActions = false) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalType').textContent = status;
   document.getElementById('modalDesc').textContent = description;
@@ -171,6 +179,17 @@ function openModalFromHTML(title, status, description, date, time, location, cam
         <p><strong>Email:</strong> ${user.email}</p>
         <button onclick="startChat(${user.id})">Message Author</button>
       `;
+
+      const modalActions = document.getElementById('modalActions');
+      if (showActions) {
+        modalActions.innerHTML = `
+          <button onclick="markAsClaimed(${itemId})">Mark as Claimed</button>
+          <button onclick="editItem(${itemId})">Update</button>
+          <button onclick="deleteItem(${itemId})">Delete</button>
+        `;
+      } else {
+        modalActions.innerHTML = ''; // Clear actions
+      }
     })
     .catch(err => {
       modalAuthor.textContent = "Author details not available.";
@@ -184,25 +203,45 @@ function closeModal() {
   document.getElementById('itemModal').classList.add('hidden');
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  // Initially highlight the 'Dashboard' link
+  document.querySelector('.menu-link[onclick*="dashboard"]').classList.add('active');
+
+  fetchItems();
+  fetchSummary();
+});
+
 function filterView(category) {
-  console.log("Filtering category:", category);
+  const loggedInUserId = parseInt(localStorage.getItem('userId'));
+  console.log("Filter category:", category);
+  console.log("Logged in user ID:", loggedInUserId);
 
-  // Highlight active link
-  document.querySelectorAll('.sidebar-menu a').forEach(link => {
-    link.classList.remove('active');
-    if (link.textContent.toLowerCase().includes(category)) {
-      link.classList.add('active');
-    }
-  });
+  // Remove the 'active' class from all menu items
+  const menuLinks = document.querySelectorAll('.menu-link');
+  menuLinks.forEach(link => link.classList.remove('active'));
 
-  if (category === 'dashboard') {
-    renderItems(allItems);
-  } else if (['lost', 'found', 'claimed'].includes(category)) {
-    const filtered = allItems.filter(item => item.status.toLowerCase() === category);
-    renderItems(filtered);
-  } else {
-    console.warn(`Unknown category: ${category}`);
+  // Add the 'active' class to the selected link
+  const activeLink = document.querySelector(`.menu-link[onclick*="${category}"]`);
+  if (activeLink) {
+    activeLink.classList.add('active');
   }
+
+  // Update currentFilter
+  currentFilter = category;
+
+  let filteredItems;
+
+  if (category === 'yourReports') {
+    filteredItems = allItems.filter(item => item.authorId === loggedInUserId);
+  } else if (category === 'claimed') {
+    filteredItems = allItems.filter(item => item.status === 'Claimed');
+  } else if (category === 'dashboard') {
+    filteredItems = allItems; // show all items
+  } else {
+    filteredItems = allItems.filter(item => item.status.toLowerCase() === category.toLowerCase());
+  }
+
+  renderItems(filteredItems);
 }
 
 function toggleSidebar() {
@@ -222,5 +261,50 @@ function fetchUserById(authorId) {
   }).then(res => {
     if (!res.ok) throw new Error('Failed to fetch user');
     return res.json();
+  });
+}
+
+function markAsClaimed(itemId) {
+  fetch(`http://localhost:8080/api/items/claimedreq/${itemId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ` + localStorage.getItem('token')
+    }
+  })
+  .then(res => {
+    if (!res.ok) throw new Error('Failed to mark as claimed');
+    alert('Item marked as claimed.');
+    closeModal();
+    fetchItems();
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Could not mark item as claimed.');
+  });
+}
+
+function editItem(itemId) {
+  // Redirect to edit page with itemId in query
+  window.location.href = `/edit-item.html?id=${itemId}`;
+}
+
+function deleteItem(itemId) {
+  if (!confirm("Are you sure you want to delete this item?")) return;
+
+  fetch(`http://localhost:8080/api/items/delete/${itemId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ` + localStorage.getItem('token')
+    }
+  })
+  .then(res => {
+    if (!res.ok) throw new Error('Failed to delete item');
+    alert('Item deleted successfully.');
+    closeModal();
+    fetchItems();
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Failed to delete the item.');
   });
 }
