@@ -1,3 +1,5 @@
+let allItems = [];
+
 const overlay = document.getElementById('overlay');
 const pageContent = document.getElementById('page-content');
 
@@ -21,16 +23,14 @@ function submitForm(event) {
   const time = document.getElementById('time').value;
   const foundOn = date && time ? `${date}T${time}` : null;
 
-  // Append text fields
   formData.append('status', document.getElementById('status').value);
   formData.append('category', document.getElementById('category').value);
   formData.append('name', document.getElementById('name').value);
   formData.append('description', document.getElementById('description').value);
   formData.append('location', document.getElementById('location').value);
-  formData.append('campus', document.getElementById('campus').value)
+  formData.append('campus', document.getElementById('campus').value);
   formData.append('foundOn', foundOn);
 
-  // Append image file
   const imageInput = document.getElementById('image');
   if (imageInput.files.length > 0) {
     formData.append('file', imageInput.files[0]);
@@ -67,7 +67,8 @@ function fetchItems() {
       return response.json();
     })
     .then(data => {
-      renderItems(data);
+      allItems = data; // cache for filtering
+      renderItems(allItems); // show all by default
     })
     .catch(error => {
       console.error('Error fetching items:', error);
@@ -79,7 +80,6 @@ function getTimeOnly(datetimeStr) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-
 function renderItems(items) {
   const container = document.querySelector('.report-list');
   container.innerHTML = '';
@@ -89,8 +89,8 @@ function renderItems(items) {
     button.className = `report-item ${item.type}`;
 
     const imagePath = item.imagePath
-          ? item.imagePath.replace(/^uploads\//, 'http://localhost:8080/images/')
-          : 'placeholder.png';
+      ? item.imagePath.replace(/^uploads\//, 'http://localhost:8080/images/')
+      : 'placeholder.png';
 
     button.onclick = () => openModalFromHTML(
       item.name,
@@ -100,18 +100,28 @@ function renderItems(items) {
       getTimeOnly(item.reportedOn),
       item.location,
       item.campus,
-      imagePath || 'placeholder.png'
+      imagePath || 'placeholder.png',
+      item.authorId
     );
 
-    button.innerHTML = `
-      <img src="${imagePath || 'placeholder.png'}" alt="${item.name}" />
-      <div>
-        <h3>${item.name}</h3>
-        <p>${item.category || 'Uncategorized'} • ${formatDate(item.reportedOn)} • ${item.location}</p>
-        <span class="tag">${capitalizeFirstLetter(item.status)}</span>
-      </div>
-    `;
+    const img = document.createElement('img');
+    img.src = imagePath || 'placeholder.png';
+    img.alt = item.name;
 
+    const div = document.createElement('div');
+
+    const title = document.createElement('h3');
+    title.textContent = item.name;
+
+    const description = document.createElement('p');
+    description.textContent = `${item.category || 'Uncategorized'} • ${formatDate(item.reportedOn)} • ${item.location}`;
+
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = capitalizeFirstLetter(item.status);
+
+    div.append(title, description, tag);
+    button.append(img, div);
     container.appendChild(button);
   });
 }
@@ -140,7 +150,7 @@ function updateSummaryCounts(summary) {
   document.querySelector('.card.claimed span').textContent = summary.claimed || 0;
 }
 
-function openModalFromHTML(title, status, description, date, time, location, campus, imgUrl) {
+function openModalFromHTML(title, status, description, date, time, location, campus, imgUrl, authorId) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalType').textContent = status;
   document.getElementById('modalDesc').textContent = description;
@@ -149,6 +159,24 @@ function openModalFromHTML(title, status, description, date, time, location, cam
   document.getElementById('modalLocation').textContent = location;
   document.getElementById('modalCampus').textContent = campus;
   document.getElementById('modalImage').src = imgUrl || 'placeholder.png';
+
+  const modalAuthor = document.getElementById('modalAuthor');
+  modalAuthor.innerHTML = 'Loading...';
+
+  fetchUserById(authorId)
+    .then(user => {
+      modalAuthor.innerHTML = `
+        <p><strong>Author:</strong> ${user.firstName} ${user.lastName}</p>
+        <p><strong>Contact:</strong> ${user.contactNum}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <button onclick="startChat(${user.id})">Message Author</button>
+      `;
+    })
+    .catch(err => {
+      modalAuthor.textContent = "Author details not available.";
+      console.error(err);
+    });
+
   document.getElementById('itemModal').classList.remove('hidden');
 }
 
@@ -158,7 +186,23 @@ function closeModal() {
 
 function filterView(category) {
   console.log("Filtering category:", category);
-  // Future logic here
+
+  // Highlight active link
+  document.querySelectorAll('.sidebar-menu a').forEach(link => {
+    link.classList.remove('active');
+    if (link.textContent.toLowerCase().includes(category)) {
+      link.classList.add('active');
+    }
+  });
+
+  if (category === 'dashboard') {
+    renderItems(allItems);
+  } else if (['lost', 'found', 'claimed'].includes(category)) {
+    const filtered = allItems.filter(item => item.status.toLowerCase() === category);
+    renderItems(filtered);
+  } else {
+    console.warn(`Unknown category: ${category}`);
+  }
 }
 
 function toggleSidebar() {
@@ -169,3 +213,14 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchItems();
   fetchSummary();
 });
+
+function fetchUserById(authorId) {
+  return fetch(`http://localhost:8080/api/auth/users/${authorId}`, {
+    headers: {
+      Authorization: `Bearer ` + localStorage.getItem('token')
+    }
+  }).then(res => {
+    if (!res.ok) throw new Error('Failed to fetch user');
+    return res.json();
+  });
+}

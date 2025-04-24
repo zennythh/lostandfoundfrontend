@@ -349,3 +349,8 @@
     border-radius: 8px;
     margin-bottom: 1rem;
   }
+
+.sidebar-menu a.active {
+  font-weight: bold;
+  color: #3498db;
+}

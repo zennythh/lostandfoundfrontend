@@ -17,10 +17,11 @@
         <h2>Until I Found You</h2>
       </div>
       <nav class="sidebar-menu">
-        <a href="#" onclick="filterView('dashboard')">Dashboard</a>
-        <a href="#" onclick="filterView('lost')">Lost Items</a>
-        <a href="#" onclick="filterView('found')">Found Items</a>
-        <a href="#" onclick="filterView('claimed')">Claimed Items</a>
+        <a href="#" class="menu-link" onclick="filterView('dashboard')">Dashboard</a>
+        <a href="#" class="menu-link" onclick="filterView('lost')">Lost Items</a>
+        <a href="#" class="menu-link" onclick="filterView('found')">Found Items</a>
+        <a href="#" class="menu-link" onclick="filterView('claimed')">Claimed Items</a>
+        <a href="#" class="menu-link" onclick="filterView('claimed')">Your Reports</a>
       </nav>
       <div class="report-btn">
         <button onclick="openForm()">+ Report Item</button>
@@ -79,7 +80,6 @@
         </form>
       </div>
 
-
     <!-- Main Content -->
     <main class="main-content">
       <header class="topbar">
@@ -107,6 +107,7 @@
   <div id="itemModal" class="item-modal hidden">
     <div class="modal-content">
       <span class="close-btn" onclick="closeModal()">×</span>
+      <div id="modalActions" class="modal-actions"></div>
       <h2 id="modalTitle">Item Name</h2>
       <p><strong>Type:</strong> <span id="modalType"></span></p>
       <p><strong>Description:</strong> <span id="modalDesc"></span></p>
@@ -115,6 +116,7 @@
       <p><strong>Campus:</strong> <span id="modalCampus"></span></p>
       <p><strong>Location:</strong> <span id="modalLocation"></span></p>
       <img id="modalImage" src="" alt="Item Image" />
+      <div id="modalAuthor" class="author-info"></div>
     </div>
   </div>
 
