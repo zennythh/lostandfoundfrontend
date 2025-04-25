@@ -13,43 +13,49 @@
   </style>
 </head>
 <body>
-  <div class="admin-container">
-    <aside class="sidebar">
-        <div class="sidebar-content">
-          <h2>Lost & Found Admin</h2>
-          <ul>
-          <li><a href="#" onclick="filterView('dashboard')">🏠 Dashboard</a></li>
-          <li><a href="#" onclick="filterView('inbox')">📥 Pending Reports</a></li>
-          <li><a href="#" onclick="filterView('feed')">✅ Approved Feed</a></li>
-        </ul>
-        </div>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-      </aside>
-
-    <main class="main-panel">
-      <section id="inbox-section" class="inbox-section">
-        <h1>📥 Inbox (Pending Reports)</h1>
-        <div id="inbox" class="report-list"></div>
-      </section>
-
-      <section id="feed-section" class="feed-section">
-        <h1>✅ Feed (Approved Reports)</h1>
-        <div id="feed" class="report-list"></div>
-      </section>
-    </main>
-  </div>
-  <div id="item-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <div id="modal-body"></div>
-      <div id="modal-actions" style="margin-top: 1em;"></div>
+<div class="admin-container">
+  <aside class="sidebar">
+    <div class="sidebar-content">
+      <h2>Lost & Found Admin</h2>
+      <ul>
+        <li><a href="#" onclick="filterView('dashboard')">🏠 Dashboard</a></li>
+        <li><a href="#" onclick="filterView('inbox')">📥 Pending Reports</a></li>
+        <li><a href="#" onclick="filterView('feed')">✅ Approved Feed</a></li>
+        <li><a href="#" onclick="filterView('deleted')">🗑️ Deleted Items</a></li>
+      </ul>
     </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </aside>
+
+  <main class="main-panel">
+    <section id="inbox-section" class="inbox-section">
+      <h1>📥 Inbox (Pending Reports)</h1>
+      <div id="inbox" class="report-list"></div>
+    </section>
+
+    <section id="feed-section" class="feed-section">
+      <h1>✅ Feed (Approved Reports)</h1>
+      <div id="feed" class="report-list"></div>
+    </section>
+
+    <section id="deleted-section" class="deleted-section" style="display:none;">
+      <h1>🗑️ Deleted Items</h1>
+      <div id="deleted" class="report-list"></div>
+    </section>
+  </main>
+</div>
+<div id="item-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div id="modal-body"></div>
+    <div id="modal-actions" style="margin-top: 1em;"></div>
   </div>
-  <script>
-    function logout() {
-      window.location.href = "login.html";
-    }
-  </script>
-  <script src="admin-panel.js"></script>
+</div>
+<script>
+  function logout() {
+    window.location.href = "login.html";
+  }
+</script>
+<script src="admin-panel.js"></script>
 </body>
 </html>

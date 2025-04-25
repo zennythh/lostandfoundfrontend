@@ -1,4 +1,4 @@
-const token = localStorage.getItem("jwt");
+const token = localStorage.getItem("token");
 
 function escapeHTML(str) {
   return str.replace(/&/g, "&amp;")
@@ -10,22 +10,25 @@ function escapeHTML(str) {
 
 async function fetchItems() {
   try {
-    const [pendingRes, approvedRes] = await Promise.all([
+    const [pendingRes, approvedRes, deletedRes] = await Promise.all([
       fetch("http://localhost:8080/api/items/requests"),
-      fetch("http://localhost:8080/api/items")
+      fetch("http://localhost:8080/api/items"),
+      fetch("http://localhost:8080/api/items/deleted")
     ]);
 
     const pendingItems = await pendingRes.json();
     const approvedItems = await approvedRes.json();
+    const deletedItems = await deletedRes.json();
 
     displayItems(pendingItems, "inbox", true);
     displayItems(approvedItems, "feed", false);
+    displayItems(deletedItems, "deleted", false, true);
   } catch (error) {
     console.error("Error fetching items:", error);
   }
 }
 
-function createItemCard(item, isPending) {
+function createItemCard(item, isPending, isDeleted = false) {
   const card = document.createElement("div");
   card.className = "report-card";
   card.id = `item-${item.itemId}`;
@@ -62,21 +65,19 @@ function createItemCard(item, isPending) {
     };
   }
 
-  // Open modal when clicking the card (not buttons)
   card.onclick = (e) => {
-    // Prevent modal from opening if a button is clicked
     if (e.target.closest('button')) return;
-    showModal(item);
+    showModal(item, isDeleted);
   };
 
   return card;
 }
 
-function displayItems(items, containerId, isPending) {
+function displayItems(items, containerId, isPending, isDeleted = false) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
   items.forEach((item) => {
-    container.appendChild(createItemCard(item, isPending));
+    container.appendChild(createItemCard(item, isPending, isDeleted));
   });
 }
 
@@ -112,9 +113,26 @@ async function rejectItem(itemId) {
   }
 }
 
+async function restoreItem(itemId) {
+  try {
+    const res = await fetch(`http://localhost:8080/api/items/restore/${itemId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!res.ok) throw new Error("Failed to restore item.");
+    console.log(`Item ${itemId} restored successfully.`);
+    fetchItems();
+  } catch (err) {
+    console.error(err);
+    alert("Error restoring item.");
+  }
+}
+
 async function markAsClaimed(itemId) {
   try {
-    const res = await fetch(`http://localhost:8080/api/items/claim/${itemId}`, {
+    const res = await fetch(`http://localhost:8080/api/items/claimedreq/${itemId}`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`
@@ -131,6 +149,11 @@ async function markAsClaimed(itemId) {
 function filterView(view) {
   const inboxEl = document.getElementById("inbox-section");
   const feedEl  = document.getElementById("feed-section");
+  const deletedEl = document.getElementById("deleted-section");
+
+  inboxEl.style.display = "none";
+  feedEl.style.display = "none";
+  deletedEl.style.display = "none";
 
   switch (view) {
     case "dashboard":
@@ -139,68 +162,103 @@ function filterView(view) {
       break;
     case "inbox":
       inboxEl.style.display = "block";
-      feedEl.style.display  = "none";
       break;
     case "feed":
-      inboxEl.style.display = "none";
       feedEl.style.display  = "block";
+      break;
+    case "deleted":
+      deletedEl.style.display = "block";
       break;
   }
 }
 
-function showModal(item) {
+async function showModal(item) {
   const modal = document.getElementById("item-modal");
   const modalBody = document.getElementById("modal-body");
   const modalActions = document.getElementById("modal-actions");
 
+  // Fetch author details
+  let authorHTML = "";
+  try {
+    const res = await fetch(`http://localhost:8080/api/auth/users/${item.authorId}`);
+    if (!res.ok) throw new Error("Failed to fetch author info");
+    const author = await res.json();
+
+    authorHTML = `
+      <hr style="margin: 1em 0;">
+      <h4>Reporter Info</h4>
+      <p><strong>Name:</strong> ${escapeHTML(author.firstName + " " + author.lastName)}</p>
+      <p><strong>Contact:</strong> ${escapeHTML(author.contactNum)}</p>
+      <p><strong>Email:</strong> ${escapeHTML(author.email)}</p>
+    `;
+  } catch (err) {
+    console.error("Author fetch error:", err);
+    authorHTML = `<p><em>Author details unavailable.</em></p>`;
+  }
+
+  const imagePath = item.imagePath
+    ? item.imagePath.replace(/^uploads\//, 'http://localhost:8080/images/')
+    : 'placeholder.png';
+
+  // Populate modal
   modalBody.innerHTML = `
+    <img src="${imagePath}" alt="${escapeHTML(item.name)}" class="report-image" style="max-height: 200px; display: block; margin: 0 auto 1em;">
     <h3>${escapeHTML(item.name)}</h3>
-    <p>${escapeHTML(item.description || "No description.")}</p>
+    <p><strong>Description:</strong> ${escapeHTML(item.description || "No description.")}</p>
     <p><strong>Category:</strong> ${escapeHTML(item.category)}</p>
     <p><strong>Location:</strong> ${escapeHTML(item.location)}</p>
-    <p><strong>Date:</strong> ${new Date(item.reportedOn).toLocaleString()}</p>
+    <p><strong>Campus:</strong> ${escapeHTML(item.campus || "N/A")}</p>
+    <p><strong>Status:</strong> ${escapeHTML(item.status)}</p>
+    <p><strong>Reported on:</strong> ${new Date(item.reportedOn).toLocaleString()}</p>
+    <p><strong>Approved:</strong> ${item.approved ? "✅ Yes" : "❌ No"}</p>
+    <p><strong>Deleted:</strong> ${item.deleted ? "🗑️ Yes" : "❌ No"}</p>
+    ${authorHTML}
   `;
 
-  modalActions.innerHTML = `
-    <button id="mark-claimed-btn">Mark as Claimed</button>
-    <button id="update-btn">Update</button>
-    <button id="delete-btn">Delete</button>
-  `;
+  // Determine available actions
+  modalActions.innerHTML = '';
 
-  // Mark as Claimed button
-  document.getElementById("mark-claimed-btn").onclick = async () => {
-    await markAsClaimed(item.itemId);
-    modal.style.display = "none";
-    fetchItems();
-  };
+  if (item.deleted) {
+    modalActions.innerHTML = `<button id="restore-btn">Restore Item</button>`;
+    document.getElementById("restore-btn").onclick = async () => {
+      await restoreItem(item.itemId);
+      modal.style.display = "none";
+      fetchItems();
+    };
+  } else {
+    modalActions.innerHTML = `
+      <button id="mark-claimed-btn">Mark as Claimed</button>
+      <button id="update-btn">Update</button>
+      <button id="delete-btn">Delete</button>
+    `;
 
-  // Delete button
-  document.getElementById("delete-btn").onclick = async () => {
-    await rejectItem(item.itemId);
-    modal.style.display = "none";
-    fetchItems();
-  };
+    document.getElementById("mark-claimed-btn").onclick = async () => {
+      await markAsClaimed(item.itemId);
+      modal.style.display = "none";
+      fetchItems();
+    };
 
-  // Update button
-  document.getElementById("update-btn").onclick = () => {
-    alert("TODO: implement update modal");
-  };
+    document.getElementById("delete-btn").onclick = async () => {
+      await rejectItem(item.itemId);
+      modal.style.display = "none";
+      fetchItems();
+    };
 
-  // Close button for the modal
+    document.getElementById("update-btn").onclick = () => {
+      alert("TODO: implement update modal");
+    };
+  }
+
   document.querySelector(".close").onclick = () => {
     modal.style.display = "none";
   };
 
-  // Display modal
   modal.style.display = "flex";
 }
 
-// Initial load
 window.onload = () => {
   filterView("dashboard");
-
-  fetchItems(); // 🔥 THIS is what loads the items!
-
+  fetchItems();
   document.querySelector(".close").onclick = () => {
     document.getElementById("item-modal").style.display = "none";
   };
