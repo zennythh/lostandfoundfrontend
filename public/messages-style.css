@@ -26,9 +26,13 @@ body {
 .conversation-item {
   padding: 10px;
   cursor: pointer;
-  color: white;
+  color: white; /* Ensure contrast */
+  font-size: 16px; /* Make text more readable */
   border-radius: 4px;
   transition: background-color 0.2s;
+  background-color: rgba(255, 255, 255, 0.1); /* Just to help debug visibility */
+  font-weight: 500;
+  border-bottom: 1px solid #444; /* Thin separator between items */
 }
 
 .conversation-item:hover {

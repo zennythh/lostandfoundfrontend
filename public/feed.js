@@ -3,6 +3,7 @@ let currentFilter = 'dashboard';
 
 const overlay = document.getElementById('overlay');
 const pageContent = document.getElementById('page-content');
+const token = localStorage.getItem("token");
 
 function openForm() {
   overlay.classList.add('active');
@@ -307,3 +308,21 @@ function deleteItem(itemId) {
     alert('Failed to delete the item.');
   });
 }
+
+function startChat(otherUserId) {
+  fetch(`http://localhost:8080/api/conversations/start?user2Id=${otherUserId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      window.location.href = `/messages.html?conversationId=${data.id}`;
+    })
+    .catch(error => {
+      console.error("Error starting chat:", error);
+      alert("Failed to start chat");
+    });
+}
+

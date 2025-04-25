@@ -1,124 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Until I Found You | Lost & Found System</title>
-  <link rel="stylesheet" href="feed.css" />
-  <script src="feed.js" defer></script>
-  <link rel="icon" href="image-removebg-preview.png" />
-</head>
-<body>
-  <div class="wrapper">
-    <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-gray-800 text-white transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:static md:block z-50">
-      <div class="sidebar-header">
-        <img src="image-removebg-preview.png" alt="Logo" class="sidebar-logo" />
-        <h2>Until I Found You</h2>
-      </div>
-      <nav class="sidebar-menu">
-        <a href="#" class="menu-link" onclick="filterView('dashboard')">Dashboard</a>
-        <a href="#" class="menu-link" onclick="filterView('lost')">Lost Items</a>
-        <a href="#" class="menu-link" onclick="filterView('found')">Found Items</a>
-        <a href="#" class="menu-link" onclick="filterView('claimed')">Claimed Items</a>
-        <a href="#" class="menu-link" onclick="filterView('yourReports')">Your Reports</a>
-      </nav>
-      <div class="report-btn">
-        <button onclick="openForm()">+ Report Item</button>
-      </div>
-    </aside>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Until I Found You | Lost & Found System</title>
+    <link rel="stylesheet" href="feed.css" />
+    <script src="feed.js" defer></script>
+    <link rel="icon" href="image-removebg-preview.png" />
+  </head>
 
-      <div id="overlay" class="overlay">
-        <form class="form" onsubmit="submitForm(event)">
-          <h2>Report Item</h2>
-
-          <label for="status">Type:</label>
-          <select id="status" name="status" required>
-            <option value="">Select</option>
-            <option value="Lost">Lost Item</option>
-            <option value="Found">Found Item</option>
-          </select>
-
-          <label for="category">Item Category:</label>
-          <select id="category" name="category" required>
-            <option value="">Select</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Documents">Documents</option>
-            <option value="Personal_Items">Personal Items</option>
-            <option value="Clothes_and_Accessories">Clothes and Accessories</option>
-            <option value="Others">Others</option>
-          </select>
-
-          <label for="name">Item Name:</label>
-          <input type="text" id="name" name="name" placeholder="e.g. Red wallet" required>
-
-          <label for="description">Description:</label>
-          <textarea id="description" name="description" rows="3" placeholder="Add details like color, brand, markings..." required></textarea>
-
-          <label for="date">Date Lost/Found:</label>
-          <input type="date" id="date" name="date" required>
-
-          <label for="time">Time Lost/Found:</label>
-          <input type="time" id="time" name="time" required>
-      
-          <label for="campus">Campus Lost/Found:</label>
-          <select type="text" id="campus" name="campus" required>
-            <option value="Congress">Congress Campus</option>
-            <option value="Bagong_Silang">Bagong Silang Campus</option>
-            <option value="Camarin">Camarin Campus</option>
-            <option value="South">South Caloocan Campus</option>
-          </select>
-          
-          <label for="location">Location:</label>
-          <input type="text" id="location" name="location" placeholder="e.g. 2nd floor/Room 201" required>
-          <label for="image">Upload Image:</label>
-          <input type="file" id="image" name="image" accept="image/*" required>
-
-          <button type="submit">Submit</button>
-          <button type="button" onclick="closeForm()">Cancel</button>
-
-        </form>
-      </div>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      <header class="topbar">
-        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-        <h1>Dashboard</h1>
-        <p>Overview of recent lost and found items</p>
-        <input type="text" placeholder="Search items..." class="search-input"/>
-      </header>
-
-      <section class="summary-cards">
-        <div class="card lost">Lost Items <span>3</span></div>
-        <div class="card found">Found Items <span>3</span></div>
-        <div class="card claimed">Claimed Items <span>3</span></div>
-      </section>
-
-      <section class="reports">
-        <h2>Reported Items</h2>
-        <div class="report-list">
-          <!-- JS will dynamically insert <button class="report-item"> here -->
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-gray-800 text-white transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:static md:block z-50">
+        <div class="sidebar-header">
+          <img src="image-removebg-preview.png" alt="Logo" class="sidebar-logo" />
+          <h2>Until I Found You</h2>
         </div>
-      </section>
-    </main>
-  </div>
+        <nav class="sidebar-menu">
+          <a href="#" class="menu-link" onclick="filterView('dashboard')">Dashboard</a>
+          <a href="#" class="menu-link" onclick="filterView('lost')">Lost Items</a>
+          <a href="#" class="menu-link" onclick="filterView('found')">Found Items</a>
+          <a href="#" class="menu-link" onclick="filterView('claimed')">Claimed Items</a>
+          <a href="#" class="menu-link" onclick="filterView('yourReports')">Your Reports</a>
+        </nav>
+        <div class="report-btn">
+          <button onclick="openForm()">+ Report Item</button>
+        </div>
+      </aside>
 
-  <div id="itemModal" class="item-modal hidden">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">×</span>
-      <div id="modalActions" class="modal-actions"></div>
-      <h2 id="modalTitle">Item Name</h2>
-      <p><strong>Type:</strong> <span id="modalType"></span></p>
-      <p><strong>Description:</strong> <span id="modalDesc"></span></p>
-      <p><strong>Date:</strong> <span id="modalDate"></span></p>
-      <p><strong>Time:</strong> <span id="modalTime"></span></p>
-      <p><strong>Campus:</strong> <span id="modalCampus"></span></p>
-      <p><strong>Location:</strong> <span id="modalLocation"></span></p>
-      <img id="modalImage" src="" alt="Item Image" />
-      <div id="modalAuthor" class="author-info"></div>
+        <div id="overlay" class="overlay">
+          <form class="form" onsubmit="submitForm(event)">
+            <h2>Report Item</h2>
+
+            <label for="status">Type:</label>
+            <select id="status" name="status" required>
+              <option value="">Select</option>
+              <option value="Lost">Lost Item</option>
+              <option value="Found">Found Item</option>
+            </select>
+
+            <label for="category">Item Category:</label>
+            <select id="category" name="category" required>
+              <option value="">Select</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Documents">Documents</option>
+              <option value="Personal_Items">Personal Items</option>
+              <option value="Clothes_and_Accessories">Clothes and Accessories</option>
+              <option value="Others">Others</option>
+            </select>
+
+            <label for="name">Item Name:</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Red wallet" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="3" placeholder="Add details like color, brand, markings..." required></textarea>
+
+            <label for="date">Date Lost/Found:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="time">Time Lost/Found:</label>
+            <input type="time" id="time" name="time" required>
+
+            <label for="campus">Campus Lost/Found:</label>
+            <select type="text" id="campus" name="campus" required>
+              <option value="Congress">Congress Campus</option>
+              <option value="Bagong_Silang">Bagong Silang Campus</option>
+              <option value="Camarin">Camarin Campus</option>
+              <option value="South">South Caloocan Campus</option>
+            </select>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" placeholder="e.g. 2nd floor/Room 201" required>
+            <label for="image">Upload Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+
+            <button type="submit">Submit</button>
+            <button type="button" onclick="closeForm()">Cancel</button>
+
+          </form>
+        </div>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="topbar">
+          <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+          <h1>Dashboard</h1>
+          <p>Overview of recent lost and found items</p>
+          <input type="text" placeholder="Search items..." class="search-input"/>
+        </header>
+
+        <section class="summary-cards">
+          <div class="card lost">Lost Items <span>3</span></div>
+          <div class="card found">Found Items <span>3</span></div>
+          <div class="card claimed">Claimed Items <span>3</span></div>
+        </section>
+
+        <section class="reports">
+          <h2>Reported Items</h2>
+          <div class="report-list">
+            <!-- JS will dynamically insert <button class="report-item"> here -->
+          </div>
+        </section>
+      </main>
     </div>
-  </div>
 
-</body>
-</html>
+    <div id="itemModal" class="item-modal hidden">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">×</span>
+        <div id="modalActions" class="modal-actions"></div>
+        <h2 id="modalTitle">Item Name</h2>
+        <p><strong>Type:</strong> <span id="modalType"></span></p>
+        <p><strong>Description:</strong> <span id="modalDesc"></span></p>
+        <p><strong>Date:</strong> <span id="modalDate"></span></p>
+        <p><strong>Time:</strong> <span id="modalTime"></span></p>
+        <p><strong>Campus:</strong> <span id="modalCampus"></span></p>
+        <p><strong>Location:</strong> <span id="modalLocation"></span></p>
+        <img id="modalImage" src="" alt="Item Image" />
+        <div id="modalAuthor" class="author-info"></div>
+      </div>
+    </div>
+
+  </body>
+  </html>
