@@ -263,3 +263,31 @@ window.onload = () => {
     document.getElementById("item-modal").style.display = "none";
   };
 };
+
+function fetchUserDetails(userId) {
+  fetch(`http://localhost:8080/api/auth/users/${userId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to fetch user details');
+      return response.json();
+    })
+    .then(data => {
+      const userName = `${data.firstName} ${data.lastName}`; // Concatenate first name and last name
+      document.getElementById('logged-in-user').textContent = `Logged in as ${userName}`;
+    })
+    .catch(error => {
+      console.error('Error fetching user details:', error);
+    });
+}
+
+// On page load or when the user is logged in, call this function
+document.addEventListener('DOMContentLoaded', () => {
+  const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage
+  if (userId) {
+    fetchUserDetails(userId); // Fetch and display the user's full name
+  }
+});

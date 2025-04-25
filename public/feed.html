@@ -27,6 +27,7 @@
         <div class="report-btn">
           <button onclick="openForm()">+ Report Item</button>
         </div>
+        <button id="logout-button">Logout</button>
       </aside>
 
         <div id="overlay" class="overlay">
@@ -87,7 +88,7 @@
           <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
           <h1>Dashboard</h1>
           <p>Overview of recent lost and found items</p>
-          <input type="text" placeholder="Search items..." class="search-input"/>
+          <span id="logged-in-user"></span>
         </header>
 
         <section class="summary-cards">
